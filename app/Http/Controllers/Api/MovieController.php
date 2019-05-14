@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Movie;
@@ -13,9 +14,15 @@ class MovieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Movie::all();
+        if(Auth::guard('api')->check()) {
+            return Movie::all();
+        }
+
+        return response()->json([
+            "error" => "Not authorized"
+        ], 401);
     }
 
     /**
@@ -37,7 +44,13 @@ class MovieController extends Controller
      */
     public function show($id)
     {
-        //
+        if(Auth::guard('api')->check()) {
+            return Movie::find($id);
+        }
+
+        return response()->json([
+            "error" => "Not authorized"
+        ], 401);
     }
 
     /**

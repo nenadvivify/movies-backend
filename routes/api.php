@@ -17,11 +17,13 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
-    Route::post('login', 'Auth\AuthController@login');
+    Route::post('login', 'Auth\AuthController@login')->name('login');
     Route::post('logout', 'Auth\AuthController@logout');
     Route::post('refresh', 'Auth\AuthController@refresh');
     Route::post('me', 'Auth\AuthController@me');
     Route::post('register', 'Auth\RegisterController@create');
 });
 
+// Restrict all api movies routess
+// Route::apiResource('movies', 'Api\MovieController')->middleware('auth:api');
 Route::apiResource('movies', 'Api\MovieController');
