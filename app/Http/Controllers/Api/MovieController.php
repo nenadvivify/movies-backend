@@ -24,7 +24,7 @@ class MovieController extends Controller
         //     "error" => "Not authorized"
         // ], 401);
 
-        return Movie::all();
+        return Movie::with('genre')->get();
     }
 
     /**
