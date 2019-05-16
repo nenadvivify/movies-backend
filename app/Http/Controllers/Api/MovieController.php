@@ -54,6 +54,7 @@ class MovieController extends Controller
         //     "error" => "Not authorized"
         // ], 401);
 
+        Movie::find($id)->increment('visits', 1);
         return Movie::with('genre')->find($id);
     }
 
