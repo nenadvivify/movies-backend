@@ -115,4 +115,23 @@ class MovieController extends Controller
 
         return $movie;
     }
+
+    public function similar(Request $request) {
+        $request->validate([
+            'movie_id' => [
+                'required',
+                'exists:movies,id'
+            ]
+        ]);
+
+        $id = request()->movie_id;
+        $limit = request()->limit ?? 10;
+
+        $movie = Movie::with('genre')->find($id);
+        $similar = Movie::with('genre')->whereHas('genre', function ($query) use ($movie) {
+            $query->where('name', $movie->genre->name);
+        })->take($limit)->get();
+
+        return $similar;
+    }
 }
