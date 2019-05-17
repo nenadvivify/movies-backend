@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Movie;
+use Illuminate\Validation\Rule;
 
 class MovieController extends Controller
 {
@@ -53,9 +54,11 @@ class MovieController extends Controller
         // return response()->json([
         //     "error" => "Not authorized"
         // ], 401);
+        $movie = Movie::find($id)->load('genre');
 
-        Movie::find($id)->increment('visits', 1);
-        return Movie::with('genre')->find($id);
+        $movie->increment('visits', 1);
+
+        return $movie;
     }
 
     /**
@@ -79,5 +82,37 @@ class MovieController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function vote(Request $request) {
+        $request->validate([
+            'type' => ['required', 'in:like,dislike'],
+            'movie_id' => [
+                'required', 
+                'exists:movies,id', 
+                Rule::notIn($request->user()->votes)
+            ],
+        ], [
+            'movie_id.not_in' => "You have already voted on this movie.",
+        ]);
+
+        $id = $request->input('movie_id');
+        $movie = Movie::with('genre')->find($id);
+        $user = Auth::user();
+        $vote = request()->type;
+
+        $votes = $user->votes ?? [];
+        $votes[] = $movie->id;
+        $user->votes = $votes;
+        $user->save();
+
+
+        if ($vote == 'like') {
+            $movie->increment('likes');
+        } else {
+            $movie->increment('dislikes');
+        }
+
+        return $movie;
     }
 }

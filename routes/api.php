@@ -25,6 +25,6 @@ Route::group([
 });
 
 // Restrict all api movies routess
-// Route::apiResource('movies', 'Api\MovieController')->middleware('auth:api');
-Route::apiResource('movies', 'Api\MovieController')->middleware('auth:api');
 Route::get('genres', 'Api\GenresController@index');
+Route::post('movies/vote', 'Api\MovieController@vote')->middleware('auth:api');
+Route::apiResource('movies', 'Api\MovieController')->middleware('auth:api');
