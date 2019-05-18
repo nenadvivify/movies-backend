@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Movie;
 use Illuminate\Validation\Rule;
+use App\Movie;
 
 class MovieController extends Controller
 {
@@ -17,14 +17,6 @@ class MovieController extends Controller
      */
     public function index(Request $request)
     {
-        // if(Auth::guard('api')->check()) {
-        //     return Movie::all();
-        // }
-
-        // return response()->json([
-        //     "error" => "Not authorized"
-        // ], 401);
-
         return Movie::with('genre')->get();
     }
 
@@ -47,17 +39,17 @@ class MovieController extends Controller
      */
     public function show($id)
     {
-        // if(Auth::guard('api')->check()) {
-        //     return Movie::find($id);
-        // }
-
-        // return response()->json([
-        //     "error" => "Not authorized"
-        // ], 401);
-        $movie = Movie::find($id)->load('genre');
+        $movie = Movie::find($id)->load([
+          'genre',
+          'comments' => function($query) {
+            $query->orderBy('created_at', 'desc');
+          },
+          'comments.user' => function($query) {
+            $query->select(['id', 'name']);
+          }
+        ]);
 
         $movie->increment('visits', 1);
-
         return $movie;
     }
 
