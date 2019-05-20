@@ -57,4 +57,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany('App\Comment');
     }
+
+    public function watchlist()
+    {
+        return $this->belongsToMany('App\Movie', 'watchlists')
+            ->withPivot('watched')
+            ->withTimestamps();
+    }
 }

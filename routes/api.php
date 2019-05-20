@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+// Auth
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
@@ -24,9 +25,17 @@ Route::group([
     Route::post('register', 'Auth\RegisterController@create');
 });
 
-// Restrict all api movies routess
+// Genres
 Route::get('genres', 'Api\GenresController@index');
+
+// Movies
 Route::post('movies/vote', 'Api\MovieController@vote');
 Route::post('movies/similar', 'Api\MovieController@similar');
 Route::post('movies/comment', 'Api\CommentsController@store');
 Route::apiResource('movies', 'Api\MovieController');
+
+// Watchlist
+Route::get('watchlist', 'Api\WatchlistController@index');
+Route::post('watchlist/{movie}', 'Api\WatchlistController@store');
+Route::patch('watchlist/{movie}', 'Api\WatchlistController@update');
+Route::delete('watchlist/{movie}', 'Api\WatchlistController@destroy');
