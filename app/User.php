@@ -33,7 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'votes' => 'array'
     ];
 
-        /**
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
@@ -53,7 +53,8 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany('App\Comment');
     }
 }

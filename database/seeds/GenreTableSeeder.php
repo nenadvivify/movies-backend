@@ -13,6 +13,6 @@ class GenreTableSeeder extends Seeder
      */
     public function run()
     {
-       factory(Genre::class, 10)->create();
+        factory(Genre::class, 10)->create();
     }
 }

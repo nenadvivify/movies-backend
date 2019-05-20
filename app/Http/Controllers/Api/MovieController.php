@@ -45,13 +45,13 @@ class MovieController extends Controller
     public function show($id)
     {
         $movie = Movie::find($id)->load([
-          'genre',
-          'comments' => function($query) {
-            $query->orderBy('created_at', 'desc');
-          },
-          'comments.user' => function($query) {
-            $query->select(['id', 'name']);
-          }
+            'genre',
+            'comments' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            },
+            'comments.user' => function ($query) {
+                $query->select(['id', 'name']);
+            }
         ]);
 
         $movie->increment('visits', 1);
@@ -81,24 +81,26 @@ class MovieController extends Controller
         //
     }
 
-    public function vote() {
+    public function vote()
+    {
         request()->validate([
             'type' => ['required', 'in:like,dislike'],
             'movie_id' => [
-                'required', 
-                'exists:movies,id', 
+                'required',
+                'exists:movies,id',
                 Rule::notIn(request()->user()->votes)
             ],
         ], [
             'movie_id.not_in' => "You have already voted on this movie.",
-        ]); 
+        ]);
 
         $id = request()->input('movie_id');
         $movie = Movie::with('genre')->find($id);
         return $movie->vote();
     }
 
-    public function similar() {
+    public function similar()
+    {
         request()->validate([
             'movie_id' => [
                 'required',

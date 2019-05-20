@@ -17,17 +17,17 @@ class CommentsController extends Controller
 
     public function store(Request $request)
     {
-    	request()->validate([
-          'movie_id' => ['required', 'exists:movies,id'],
-          'body' => ['required']
-      ]);
+        request()->validate([
+            'movie_id' => ['required', 'exists:movies,id'],
+            'body' => ['required']
+        ]);
 
-    	$comment = Comment::create([
-          'body' => $request->body,
-          'user_id' => Auth::id(),
-          'movie_id' => $request->movie_id
-      ]);
+        $comment = Comment::create([
+            'body' => $request->body,
+            'user_id' => Auth::id(),
+            'movie_id' => $request->movie_id
+        ]);
 
-    	return $comment->load('user');
+        return $comment->load('user');
     }
 }

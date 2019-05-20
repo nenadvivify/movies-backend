@@ -13,7 +13,8 @@ class GenresController extends Controller
         $this->middleware('auth:api');
     }
 
-    public function index() {
-    	return Genre::all();
+    public function index()
+    {
+        return Genre::all();
     }
 }

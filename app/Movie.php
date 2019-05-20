@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Movie extends Model
 {
-  	public function comments() {
-  		return $this->hasMany('App\Comment');
-  	}
-	
-    public function genre() {
-    	return $this->belongsTo('App\Genre');
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
+    
+    public function genre()
+    {
+        return $this->belongsTo('App\Genre');
     }
 
-    public function vote() {
+    public function vote()
+    {
         $user = auth()->user();
         $vote = request()->type;
 
@@ -32,7 +35,8 @@ class Movie extends Model
         return $this;
     }
 
-    public function similar() {
+    public function similar()
+    {
         $limit = request()->limit ?? 10;
         
         return Movie::with('genre')->whereHas('genre', function ($query) {
