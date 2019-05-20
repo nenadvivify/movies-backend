@@ -26,7 +26,7 @@ Route::group([
 
 // Restrict all api movies routess
 Route::get('genres', 'Api\GenresController@index');
-Route::post('movies/vote', 'Api\MovieController@vote')->middleware('auth:api');
-Route::post('movies/similar', 'Api\MovieController@similar')->middleware('auth:api');
-Route::post('movies/comment', 'Api\CommentsController@store')->middleware('auth:api');
-Route::apiResource('movies', 'Api\MovieController')->middleware('auth:api');
+Route::post('movies/vote', 'Api\MovieController@vote');
+Route::post('movies/similar', 'Api\MovieController@similar');
+Route::post('movies/comment', 'Api\CommentsController@store');
+Route::apiResource('movies', 'Api\MovieController');

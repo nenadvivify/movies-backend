@@ -10,11 +10,16 @@ use App\Movie;
 
 class CommentsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function store(Request $request)
     {
     	request()->validate([
-        'movie_id' => ['required', 'exists:movies,id'],
-        'body' => ['required']
+          'movie_id' => ['required', 'exists:movies,id'],
+          'body' => ['required']
       ]);
 
     	$comment = Comment::create([

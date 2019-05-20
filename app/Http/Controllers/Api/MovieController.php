@@ -10,6 +10,11 @@ use App\Movie;
 
 class MovieController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -76,40 +81,25 @@ class MovieController extends Controller
         //
     }
 
-    public function vote(Request $request) {
-        $request->validate([
+    public function vote() {
+        request()->validate([
             'type' => ['required', 'in:like,dislike'],
             'movie_id' => [
                 'required', 
                 'exists:movies,id', 
-                Rule::notIn($request->user()->votes)
+                Rule::notIn(request()->user()->votes)
             ],
         ], [
             'movie_id.not_in' => "You have already voted on this movie.",
-        ]);
+        ]); 
 
-        $id = $request->input('movie_id');
+        $id = request()->input('movie_id');
         $movie = Movie::with('genre')->find($id);
-        $user = Auth::user();
-        $vote = request()->type;
-
-        $votes = $user->votes ?? [];
-        $votes[] = $movie->id;
-        $user->votes = $votes;
-        $user->save();
-
-
-        if ($vote == 'like') {
-            $movie->increment('likes');
-        } else {
-            $movie->increment('dislikes');
-        }
-
-        return $movie;
+        return $movie->vote();
     }
 
-    public function similar(Request $request) {
-        $request->validate([
+    public function similar() {
+        request()->validate([
             'movie_id' => [
                 'required',
                 'exists:movies,id'
@@ -117,13 +107,7 @@ class MovieController extends Controller
         ]);
 
         $id = request()->movie_id;
-        $limit = request()->limit ?? 10;
-
         $movie = Movie::with('genre')->find($id);
-        $similar = Movie::with('genre')->whereHas('genre', function ($query) use ($movie) {
-            $query->where('name', $movie->genre->name);
-        })->take($limit)->get();
-
-        return $similar;
+        return $movie->similar();
     }
 }
