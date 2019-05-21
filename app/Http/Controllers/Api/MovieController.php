@@ -22,7 +22,19 @@ class MovieController extends Controller
      */
     public function index()
     {
-        return Movie::with('genre')->get();
+        return Movie::with('genre')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    public function store()
+    {
+        request()->validate([
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string']
+        ]);
+
+        return Movie::create(request()->all());
     }
 
 
