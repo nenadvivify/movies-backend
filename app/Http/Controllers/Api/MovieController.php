@@ -102,4 +102,9 @@ class MovieController extends Controller
         $movie = Movie::with('genre')->find($id);
         return $movie->similar();
     }
+
+    public function search()
+    {
+        return Movie::search(request()->search)->take(10)->get()->load('genre');
+    }
 }
