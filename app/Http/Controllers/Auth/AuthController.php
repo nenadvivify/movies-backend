@@ -27,18 +27,10 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        $check = Validator::make((array) $credentials, [
+        request()->validate([
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:6'
         ]);
-        
-        if($check->fails()) {
-            $returnData = array(
-                'status' => 'error',
-                'message' => $check->messages()
-            );
-            return response()->json($returnData, 401);
-        }
 
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -91,7 +83,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            // 'expires_in' => 1000 * 60 * 60 * 24 * 3 
+            // 'expires_in' => 1000 * 60 * 60 * 24 * 3
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
